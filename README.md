@@ -1,0 +1,5 @@
+# zhilianzp
+
+该项目使用scrapy爬取智联招聘职位详情和相关公司简介，并将爬取到的结果保存到mongo数据库，按地名和行业分别创建不同数据库集合。
+
+在处理网页时用到了requests库， pyquery库和beautifulsoup库，定位元素并简单清洗html标签。
