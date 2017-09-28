@@ -53,8 +53,12 @@ class ZhilianSpider(scrapy.Spider):
         number = response.xpath(
             "/html/body/div[6]/div[1]/ul/li[7]/strong/text()").extract()[0]
         # 工作地点
-        job_location = response.xpath(
-            "/html/body/div[6]/div[1]/ul/li[2]/strong/a/text()").extract()[0]
+        city = response.xpath("/html/body/div[6]/div[1]/ul/li[2]/strong/a/text()").extract_first()
+        dist = response.xpath("/html/body/div[6]/div[1]/ul/li[2]/strong/text()").extract_first()
+        if dist:
+            job_location = city + dist
+        else:
+            job_location = city
         # 工作性质
         job_nature = response.xpath(
             "/html/body/div[6]/div[1]/ul/li[4]/strong/text()").extract()[0]
@@ -112,7 +116,7 @@ class ZhilianSpider(scrapy.Spider):
         if number:
             item['number'] = number
         if job_location:
-            item['job_location'] = job_location
+            item['job_location'] = job_location.strip()
         if job_nature:
             item['job_nature'] = job_nature
         if education:
