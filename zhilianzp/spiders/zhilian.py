@@ -11,42 +11,25 @@ import re
 class ZhilianSpider(scrapy.Spider):
     name = 'zhilian'
     allowed_domains = ['zhaopin.com']
-    all_urls = main()  # 获取需要爬取的url
+    # 利用zhilian_url生成职位列表
+    all_urls = main()
     start_urls = all_urls
 
     def re_zhiwei(self, content):
+        """提取职位描述"""
         pattern = re.compile(
             "<!-- SWSStringCutStart -->(.*?)<!-- SWSStringCutEnd -->", re.S)
         items = re.findall(pattern, content)
         return items
 
-    def re_parse(self, content):
-        """
-        提取职位描述
-        :param content:
-        :return:
-        """
-
-        pattern = re.compile("<p>(.*?)</p><p><br>", re.S)
-        items = re.findall(pattern, content)
-        return items
-
     def re_han(self, content):
-        """
-        提取公司描述
-        :param content:
-        :return:
-        """
+        """提取公司描述"""
         pattern = re.compile(">该公司其他职位</a></h5>(.*?)<h3></h3>", re.S)
         items = re.findall(pattern, content)
         return items
 
     def bs_parse(self, content):
-        """
-        去除公司描述中的html标签
-        :param content:
-        :return:
-        """
+        """去除公司描述中的html标签"""
         html = bs(content, 'lxml')
         return html.get_text()
 
@@ -90,9 +73,11 @@ class ZhilianSpider(scrapy.Spider):
             ".company-box .img-border a img::attr(src)").extract_first()
         # 公司名称
         if logo:
-            comp_name = response.xpath("/html/body/div[6]/div[2]/div[1]/p[2]/a/text()").extract()
+            comp_name = response.xpath(
+                "/html/body/div[6]/div[2]/div[1]/p[2]/a/text()").extract()
         else:
-            comp_name = response.xpath("/html/body/div[6]/div[2]/div[1]/p/a/text()").extract()
+            comp_name = response.xpath(
+                "/html/body/div[6]/div[2]/div[1]/p/a/text()").extract()
         # 公司规模
         comp_size = response.xpath(
             "/html/body/div[6]/div[2]/div[1]/ul/li[1]/strong/text()").extract()[0]

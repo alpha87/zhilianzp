@@ -14,10 +14,12 @@ from pyquery import PyQuery as pq
 
 def create_url():
     job_id = get_industry_dict()
-    return ["http://sou.zhaopin.com/jobs/searchresult.ashx?in={}&jl=530&p=1".format(jobnum) for jobnum in list(job_id.keys())]
+    return ["http://sou.zhaopin.com/jobs/searchresult.ashx?in={}&jl=530&p=1".format(
+        jobnum) for jobnum in list(job_id.keys())]
 
 
 def parse_url():
+    """获取行业职位相关信息，生成列表"""
     headers = {
         "User-Agent": "Mozilla/5.0 (Windows; U; Windows NT 5.1; en-US) AppleWebKit/533.20.25 (KHTML, like Gecko) Version/5.0.3 Safari/533.19.4"
     }
@@ -30,6 +32,7 @@ def parse_url():
 
 
 def get_job_list(texts):
+    """通过解析上一函数列表，生成各职位详情页URL"""
     url_box = list()
     for text in texts:
         doc = pq(text)
@@ -43,8 +46,7 @@ def get_job_list(texts):
 
 def main():
     html = parse_url()
-    job_lists= get_job_list(html)
-    #print(job_lists)
+    job_lists = get_job_list(html)
     return job_lists
 
 

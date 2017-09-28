@@ -2,4 +2,4 @@
 # -*- coding: utf-8 -*-
 from scrapy import cmdline
 
-cmdline.execute("scrapy crawl zhilian".split())
+cmdline.execute("scrapy crawl zhilian".split())  # 运行爬虫

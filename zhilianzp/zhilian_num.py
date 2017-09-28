@@ -93,25 +93,27 @@ def parse_citynum(text):
 def job_num(subjobtype):
     # 职位类别代码
     jobnum = parse_jobnum("".join(subjobtype))
-    #print(set(jobnum))
+    # print(set(jobnum))
     return set(jobnum)
 
 
 def city_num(city):
     # 城市代码
     citynum = parse_citynum("".join(city))
-    #print(set(citynum))
+    # print(set(citynum))
     return set(citynum)
+
 
 def industry_num(industry):
     indusnum = parse_industry("".join(industry))
-    #print(set(indusnum))
+    # print(set(indusnum))
     return set(indusnum)
+
 
 def re_parse(text):
     pattern = re.compile("@(\d+)\|(.*?)\|")
     items = re.findall(pattern, text)
-    #print(dict(items))
+    # print(dict(items))
     return dict(items)
 
 
@@ -139,7 +141,7 @@ def all_infors(text):
     #         compsize,
     #         district))
     # print("="*30)
-    #re_parse("".join(city))
+    # re_parse("".join(city))
     re_parse("".join(industry))
     industry_num(industry)
     job_num(subjobtype)
@@ -163,6 +165,7 @@ def get_city_id():
     city_id = city_num(city)
     return city_id
 
+
 def get_industry_id():
     url = "http://sou.zhaopin.com/assets/javascript/basedata.js?v=20170823"
     html = get_page(url)
@@ -171,7 +174,9 @@ def get_industry_id():
     job_id = job_num(subjobtype)
     return job_id
 
+
 def get_industry_dict():
+    """生成字典，使用代号"""
     url = "http://sou.zhaopin.com/assets/javascript/basedata.js?v=20170823"
     html = get_page(url)
     text = parse_str(html)
@@ -179,7 +184,9 @@ def get_industry_dict():
     indus_dict = re_parse("".join(industry))
     return indus_dict
 
+
 def main():
+    """生成列表"""
     url = "http://sou.zhaopin.com/assets/javascript/basedata.js?v=20170823"
     html = get_page(url)
     text = parse_str(html)
