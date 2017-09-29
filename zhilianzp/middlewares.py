@@ -5,17 +5,31 @@
 # See documentation in:
 # http://doc.scrapy.org/en/latest/topics/spider-middleware.html
 
+from .untils import get_proxy
 from scrapy import signals
-import random
+from time import sleep
+
 
 class ProxyMiddleware(object):
     """使用代理ip"""
-    proxy_list = ['120.193.143.249:80']
+    num = 0
 
     def process_request(self, request, spider):
-        proxy_used = random.choice(self.proxy_list)
-        print("Use proxy >>> ", proxy_used)
-        request.meta['proxy'] = "http://" + proxy_used
+        try:
+            proxy = get_proxy()
+            print("Using proxy >>> ", proxy)
+            request.meta['proxy'] = "http://" + proxy
+        except TimeoutError:
+            proxy = get_proxy()
+            print("Using proxy >>> ", proxy)
+            request.meta['proxy'] = "http://" + proxy
+        except TypeError:
+            sleep(30)
+            print("代理池为空，等待30s")
+            proxy = get_proxy()
+            print("Using proxy >>> ", proxy)
+            request.meta['proxy'] = "http://" + proxy  # 如何递归调用自己？
+
 
 
 class ZhilianzpSpiderMiddleware(object):

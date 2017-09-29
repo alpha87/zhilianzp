@@ -42,11 +42,8 @@ class TimePipeline(object):
     def close_spider(self, spider):
         print(("[ Spider End ]"))
         self.end_time = time.time()
-
         used_time = self.end_time - self.start_time
-        print("/********** All Time **********/")
-        print("/***** " + used_time + " *****/")
-        print("/********** All Time **********/")
+        print("/***** " + str(int(used_time)) + "s *****/")
 
 
 class MongoPipeline(object):
@@ -80,7 +77,7 @@ class MongoPipeline(object):
         for com in coms:
             n = self.db[com].count()
             col_name.append(n)
-        print("共存入" + sum(col_name) + "条数据")
+        print("\n[ 共存入" + str(sum(col_name)) + "条数据 ]\n")
         self.client.close()
 
     def process_item(self, item, spider):

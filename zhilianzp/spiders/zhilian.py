@@ -36,9 +36,17 @@ class ZhilianSpider(scrapy.Spider):
     def parse(self, response):
         item = ZhilianzpItem()
         zp = ZhilianSpider()
+
+        #职位页面
+        job_url5 = response.xpath("/html/head/link[5]/@href").extract_first().startswith("http://jobs")
+        # job_url6 = response.xpath("/html/head/link[6]/@href").extract_first().startswith("http://jobs")
+        if job_url5:
+            job_url = response.xpath("/html/head/link[5]/@href").extract_first()
+        else:
+            job_url = response.xpath("/html/head/link[6]/@href").extract_first()
         # 职位名称
         job_name = response.xpath(
-            "//div[@class='inner-left fl']/h1/text()").extract()[0]
+            "//div[@class='inner-left fl']/h1/text()").extract_first()
         # 福利
         welfare = response.css("div .welfare-tab-box span").extract()
         # 职位月薪
@@ -108,6 +116,9 @@ class ZhilianSpider(scrapy.Spider):
         else:
             comp_location = response.css(
                 ".company-box .terminal-ul.clearfix.terminal-company.mt20 li:nth-child(4) strong::text").extract()
+
+        if job_url:
+            item['job_url'] = job_url
         if job_name:
             item['job_name'] = job_name
         if welfare:
@@ -142,7 +153,15 @@ class ZhilianSpider(scrapy.Spider):
                 "").replace(
                 "\xa0", "").strip()
         if introduce:
-            item['introduce'] = zp.bs_parse("".join(zp.re_han(introduce))).strip().replace("\xa0", "")
+            item['introduce'] = zp.bs_parse(
+                "".join(
+                    zp.re_han(introduce))).strip().replace(
+                "\xa0",
+                "").replace(
+                "\n",
+                "").replace(
+                    "\u3000",
+                "")
         if str(logo).startswith("//company"):
             item['logo'] = "http:" + logo
         else:

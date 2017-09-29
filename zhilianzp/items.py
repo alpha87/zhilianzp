@@ -11,6 +11,8 @@ from scrapy import Item, Field
 class ZhilianzpItem(Item):
     # name = scrapy.Field()
 
+    #职位页面
+    job_url = Field()
     #职位名称
     job_name = Field()
     #福利

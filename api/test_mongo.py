@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 import pymongo
-from pymongo.results import BulkWriteResult
+
 
 client = pymongo.MongoClient('127.0.0.1', 27017)
 db = client['Beijing']

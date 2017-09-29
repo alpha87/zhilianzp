@@ -18,8 +18,8 @@ def create_url():
     在item中创建city字段，数据库命名时使用item['city']命名即可。
     """
     job_id = get_industry_dict()
-    return ["http://sou.zhaopin.com/jobs/searchresult.ashx?in={}&jl=530&p=1".format(
-        jobnum) for jobnum in list(job_id.keys())]
+    return ["http://sou.zhaopin.com/jobs/searchresult.ashx?in=160100&jl=530&p=1"]#.format(
+        # jobnum) for jobnum in list(job_id.keys())]
 
 
 def parse_url():
