@@ -81,6 +81,8 @@ class MongoPipeline(object):
         self.client.close()
 
     def process_item(self, item, spider):
-        if self.db[item['vocation']].insert(dict(item)):
-            print("Save to MongoDB.")
-            return item
+        if not self.db[item['vocation']].find_one({"job_url":item['job_url']}): # 根据职位页面去重
+            if self.db[item['vocation']].insert(dict(item)):
+                print("Save to MongoDB.")
+                return item
+            return None

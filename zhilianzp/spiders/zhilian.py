@@ -37,13 +37,16 @@ class ZhilianSpider(scrapy.Spider):
         item = ZhilianzpItem()
         zp = ZhilianSpider()
 
-        #职位页面
-        job_url5 = response.xpath("/html/head/link[5]/@href").extract_first().startswith("http://jobs")
+        # 职位页面
+        job_url5 = response.xpath(
+            "/html/head/link[5]/@href").extract_first().startswith("http://jobs")
         # job_url6 = response.xpath("/html/head/link[6]/@href").extract_first().startswith("http://jobs")
         if job_url5:
-            job_url = response.xpath("/html/head/link[5]/@href").extract_first()
+            job_url = response.xpath(
+                "/html/head/link[5]/@href").extract_first()
         else:
-            job_url = response.xpath("/html/head/link[6]/@href").extract_first()
+            job_url = response.xpath(
+                "/html/head/link[6]/@href").extract_first()
         # 职位名称
         job_name = response.xpath(
             "//div[@class='inner-left fl']/h1/text()").extract_first()
@@ -185,5 +188,5 @@ class ZhilianSpider(scrapy.Spider):
         else:
             item['comp_location'] = "None"
 
-        time.sleep(randint(1, 4))  # 加入随机停顿时间
+        # time.sleep(randint(1, 4))  # 加入随机停顿时间
         yield item
