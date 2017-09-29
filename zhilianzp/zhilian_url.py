@@ -13,6 +13,10 @@ from pyquery import PyQuery as pq
 #         jobnum, citynum) for jobnum in job_id for citynum in city_id]
 
 def create_url():
+    """
+    如果要爬取所有地区的信息，并分类。需要：
+    在item中创建city字段，数据库命名时使用item['city']命名即可。
+    """
     job_id = get_industry_dict()
     return ["http://sou.zhaopin.com/jobs/searchresult.ashx?in={}&jl=530&p=1".format(
         jobnum) for jobnum in list(job_id.keys())]

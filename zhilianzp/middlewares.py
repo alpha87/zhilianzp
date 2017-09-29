@@ -6,6 +6,16 @@
 # http://doc.scrapy.org/en/latest/topics/spider-middleware.html
 
 from scrapy import signals
+import random
+
+class ProxyMiddleware(object):
+    """使用代理ip"""
+    proxy_list = ['120.193.143.249:80']
+
+    def process_request(self, request, spider):
+        proxy_used = random.choice(self.proxy_list)
+        print("Use proxy >>> ", proxy_used)
+        request.meta['proxy'] = "http://" + proxy_used
 
 
 class ZhilianzpSpiderMiddleware(object):

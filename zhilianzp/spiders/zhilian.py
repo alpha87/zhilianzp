@@ -53,8 +53,10 @@ class ZhilianSpider(scrapy.Spider):
         number = response.xpath(
             "/html/body/div[6]/div[1]/ul/li[7]/strong/text()").extract()[0]
         # 工作地点
-        city = response.xpath("/html/body/div[6]/div[1]/ul/li[2]/strong/a/text()").extract_first()
-        dist = response.xpath("/html/body/div[6]/div[1]/ul/li[2]/strong/text()").extract_first()
+        city = response.xpath(
+            "/html/body/div[6]/div[1]/ul/li[2]/strong/a/text()").extract_first()
+        dist = response.xpath(
+            "/html/body/div[6]/div[1]/ul/li[2]/strong/text()").extract_first()
         if dist:
             job_location = city + dist
         else:
@@ -71,7 +73,12 @@ class ZhilianSpider(scrapy.Spider):
         # 职位描述
         job_desc = response.css(".tab-inner-cont").extract()[0]
         # 公司介绍
-        introduce = response.css(".tab-inner-cont").extract()[1]
+        string = response.css(".tab-inner-cont").extract()[1]
+        table = response.css(".previewConInbox").extract_first()
+        if string:
+            introduce = string
+        elif table:
+            introduce = table
         # 公司图标
         logo = response.css(
             ".company-box .img-border a img::attr(src)").extract_first()
@@ -95,9 +102,12 @@ class ZhilianSpider(scrapy.Spider):
         home_page = response.xpath(
             "/html/body/div[6]/div[2]/div[1]/ul/li[4]/strong/a/text()").extract()
         # 公司地址
-        #comp_location = response.xpath("/html/body/div[6]/div[2]/div[1]/ul/li[5]/strong/text()").extract()
-        comp_location = response.css(
-            ".company-box .terminal-ul.clearfix.terminal-company.mt20 li:nth-child(4) strong::text").extract()
+        if home_page:
+            comp_location = response.xpath(
+                "/html/body/div[6]/div[2]/div[1]/ul/li[5]/strong/text()").extract()
+        else:
+            comp_location = response.css(
+                ".company-box .terminal-ul.clearfix.terminal-company.mt20 li:nth-child(4) strong::text").extract()
         if job_name:
             item['job_name'] = job_name
         if welfare:
@@ -132,10 +142,7 @@ class ZhilianSpider(scrapy.Spider):
                 "").replace(
                 "\xa0", "").strip()
         if introduce:
-            item['introduce'] = zp.bs_parse(
-                "".join(
-                    zp.re_han(introduce))).strip().replace(
-                "\xa0", "")
+            item['introduce'] = zp.bs_parse("".join(zp.re_han(introduce))).strip().replace("\xa0", "")
         if str(logo).startswith("//company"):
             item['logo'] = "http:" + logo
         else:

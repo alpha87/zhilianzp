@@ -5,9 +5,11 @@
 # Don't forget to add your pipeline to the ITEM_PIPELINES setting
 # See: http://doc.scrapy.org/en/latest/topics/item-pipeline.html
 import pymongo
+import time
 
 
 class ZhilianzpPipeline(object):
+
     def process_item(self, item, spider):
         return item
 
@@ -30,10 +32,30 @@ class WritePipeline(object):
         return item
 
 
+class TimePipeline(object):
+    """获取爬虫用时"""
+
+    def open_spider(self, spider):
+        print("[ Spider Start ]")
+        self.start_time = time.time()
+
+    def close_spider(self, spider):
+        print(("[ Spider End ]"))
+        self.end_time = time.time()
+
+        used_time = self.end_time - self.start_time
+        print("/********** All Time **********/")
+        print("/***** " + used_time + " *****/")
+        print("/********** All Time **********/")
+
+
 class MongoPipeline(object):
+
     """
     保存到Mongo数据库，按地名分数据库，根据工作职位分集合
     """
+
+    number_of_urls = 0
 
     def __init__(self, mongo_uri, mongo_db):
         self.mongo_uri = mongo_uri
@@ -51,6 +73,14 @@ class MongoPipeline(object):
         self.db = self.client[self.mongo_db]
 
     def close_spider(self, spider):
+        """在关闭时获取所有集合名称，计算总数"""
+
+        coms = self.db.collection_names()
+        col_name = list()
+        for com in coms:
+            n = self.db[com].count()
+            col_name.append(n)
+        print("共存入" + sum(col_name) + "条数据")
         self.client.close()
 
     def process_item(self, item, spider):
