@@ -18,6 +18,9 @@ NEWSPIDER_MODULE = 'zhilianzp.spiders'
 MONGO_URI = '127.0.0.1'
 MONGO_DB = 'Beijing'
 
+# 生成日志文件
+#LOG_LEVEL= 'DEBUG'
+#LOG_FILE ='log.txt'
 
 # Crawl responsibly by identifying yourself (and your website) on the user-agent
 #USER_AGENT = 'zhilianzp (+http://www.yourdomain.com)'
