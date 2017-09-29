@@ -43,7 +43,7 @@ class TimePipeline(object):
         print(("[ Spider End ]"))
         self.end_time = time.time()
         used_time = self.end_time - self.start_time
-        print("/***** " + str(int(used_time)) + "s *****/")
+        print("/***** 共花费" + str(int(used_time)) + "秒 *****/")
 
 
 class MongoPipeline(object):
