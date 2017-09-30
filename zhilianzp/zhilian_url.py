@@ -22,7 +22,7 @@ def create_url():
         "http://sou.zhaopin.com/jobs/searchresult.ashx?in={}&jl=530&p={}".format(
             jobnum, page) for jobnum in list(
             job_id.keys()) for page in range(
-               27, 31)]
+               38, 50)]
 
 
 def parse_url():

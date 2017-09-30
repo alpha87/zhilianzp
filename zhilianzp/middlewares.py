@@ -5,41 +5,50 @@
 # See documentation in:
 # http://doc.scrapy.org/en/latest/topics/spider-middleware.html
 
-from .untils import get_proxy, get_proxies
+from .untils import get_proxy, get_proxies, proxies
 from scrapy import signals
-from time import sleep
 import random
 
 
 class Proxy0Middleware(object):
     """使用代理ip"""
-    def __init__(self):
-        self.count = 100
+    proxy = get_proxy()
+    print("调用的代理IP", proxy)
 
     def process_request(self, request, spider):
         try:
+            print("Using proxy >>> ", self.proxy)
+            request.meta['proxy'] = "http://" + self.proxy
+        except TimeoutError and TypeError:
+            print("代理超时")
             proxy = get_proxy()
             print("Using proxy >>> ", proxy)
             request.meta['proxy'] = "http://" + proxy
-        except TimeoutError:
-            proxy = get_proxy()
-            print("Using proxy >>> ", proxy)
-            request.meta['proxy'] = "http://" + proxy
-        except TypeError:
-            sleep(30)
-            print("代理池为空，等待30s")
-            proxy = get_proxy()
-            print("Using proxy >>> ", proxy)
-            request.meta['proxy'] = "http://" + proxy  # 如何递归调用自己？
+
 
 class Proxy1Middleware(object):
-
     proxy_list = get_proxies()
 
     def process_request(self, request, spider):
         using_ip = random.choice(self.proxy_list)
         print("Using proxy >>> ", using_ip)
         request.meta['proxy'] = "http://" + using_ip
+
+
+class Proxy2Middleware(object):
+    def get_new_proxy(self):
+        using_ip = proxies()
+        return using_ip
+
+    using_ip = proxies()
+
+    def process_request(self, request, spider):
+        print("正在使用代理 >>> ", self.using_ip)
+        try:
+            request.meta['proxy'] = "http://" + self.using_ip
+        except TimeoutError and TypeError:
+            print("原代理出错，已更换代理 >>> ", self.get_new_proxy())
+            request.meta['proxy'] = "http://" + self.get_new_proxy()
 
 
 class ZhilianzpSpiderMiddleware(object):
