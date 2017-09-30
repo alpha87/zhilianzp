@@ -22,6 +22,12 @@ MONGO_DB = 'Beijing'
 #LOG_LEVEL= 'DEBUG'
 #LOG_FILE ='log.txt'
 
+# 启用Redis调度存储请求队列
+#SCHEDULER = "scrapy_redis.scheduler.Scheduler"
+
+# 确保所有的爬虫通过Redis去重
+#DUPEFILTER_CLASS = "scrapy_redis.dupefilter.RFPDupeFilter"
+
 # Crawl responsibly by identifying yourself (and your website) on the user-agent
 #USER_AGENT = 'zhilianzp (+http://www.yourdomain.com)'
 
@@ -29,7 +35,7 @@ MONGO_DB = 'Beijing'
 ROBOTSTXT_OBEY = False
 
 # Configure maximum concurrent requests performed by Scrapy (default: 16)
-#CONCURRENT_REQUESTS = 32
+CONCURRENT_REQUESTS = 16
 
 # Configure a delay for requests for the same website (default: 0)
 # See http://scrapy.readthedocs.org/en/latest/topics/settings.html#download-delay
@@ -60,7 +66,7 @@ DEFAULT_REQUEST_HEADERS = {
 # Enable or disable downloader middlewares
 # See http://scrapy.readthedocs.org/en/latest/topics/downloader-middleware.html
 DOWNLOADER_MIDDLEWARES = {
-   'zhilianzp.middlewares.ProxyMiddleware': 543,
+   'zhilianzp.middlewares.Proxy1Middleware': 543,
 }
 
 # Enable or disable extensions

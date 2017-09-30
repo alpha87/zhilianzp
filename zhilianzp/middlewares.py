@@ -5,14 +5,16 @@
 # See documentation in:
 # http://doc.scrapy.org/en/latest/topics/spider-middleware.html
 
-from .untils import get_proxy
+from .untils import get_proxy, get_proxies
 from scrapy import signals
 from time import sleep
+import random
 
 
-class ProxyMiddleware(object):
+class Proxy0Middleware(object):
     """使用代理ip"""
-    num = 0
+    def __init__(self):
+        self.count = 100
 
     def process_request(self, request, spider):
         try:
@@ -30,6 +32,14 @@ class ProxyMiddleware(object):
             print("Using proxy >>> ", proxy)
             request.meta['proxy'] = "http://" + proxy  # 如何递归调用自己？
 
+class Proxy1Middleware(object):
+
+    proxy_list = get_proxies()
+
+    def process_request(self, request, spider):
+        using_ip = random.choice(self.proxy_list)
+        print("Using proxy >>> ", using_ip)
+        request.meta['proxy'] = "http://" + using_ip
 
 
 class ZhilianzpSpiderMiddleware(object):

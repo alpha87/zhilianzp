@@ -8,6 +8,7 @@ import pymongo
 import time
 
 
+
 class ZhilianzpPipeline(object):
 
     def process_item(self, item, spider):
@@ -86,3 +87,5 @@ class MongoPipeline(object):
                 print("Save to MongoDB.")
                 return item
             return None
+        else:
+            print("重复跳过")
