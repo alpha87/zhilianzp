@@ -66,7 +66,7 @@ DEFAULT_REQUEST_HEADERS = {
 # Enable or disable downloader middlewares
 # See http://scrapy.readthedocs.org/en/latest/topics/downloader-middleware.html
 DOWNLOADER_MIDDLEWARES = {
-   'zhilianzp.middlewares.Proxy1Middleware': 543,
+    'zhilianzp.middlewares.Proxy1Middleware': 543,
 }
 
 # Enable or disable extensions
@@ -80,8 +80,8 @@ DOWNLOADER_MIDDLEWARES = {
 ITEM_PIPELINES = {
     #'zhilianzp.pipelines.ZhilianzpPipeline': 300,
     #'zhilianzp.pipelines.WritePipeline':300,
-    'zhilianzp.pipelines.MongoPipeline':300,
-    'zhilianzp.pipelines.TimePipeline':299,
+    'zhilianzp.pipelines.MongoPipeline': 300,
+    'zhilianzp.pipelines.TimePipeline': 299,
 }
 
 # Enable and configure the AutoThrottle extension (disabled by default)

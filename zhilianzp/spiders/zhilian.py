@@ -155,6 +155,8 @@ class ZhilianSpider(scrapy.Spider):
                 "<br>",
                 "").replace(
                 "\xa0", "").strip()
+        else:
+            item['job_desc'] = "None"
         if introduce:
             item['introduce'] = zp.bs_parse(
                 "".join(
@@ -165,6 +167,8 @@ class ZhilianSpider(scrapy.Spider):
                 "").replace(
                     "\u3000",
                 "")
+        else:
+            item['introduce'] = "None"
         if str(logo).startswith("//company"):
             item['logo'] = "http:" + logo
         else:
