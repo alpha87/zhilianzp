@@ -43,7 +43,7 @@ class TimePipeline(object):
     def close_spider(self, spider):
         self.end_time = time.time()
         used_time = self.end_time - self.start_time
-        print("/***** 共花费" + str(int(used_time)) + "秒 *****/")
+        print("***** 共花费" + str(int(used_time)) + "秒 *****")
         print(("[ Spider End ]"))
 
 
@@ -78,7 +78,7 @@ class MongoPipeline(object):
         for com in coms:
             n = self.db[com].count()
             col_name.append(n)
-        print("\n[ 共存入" + str(sum(col_name)) + "条数据 ]\n")
+        print("\n[ 数据库中共存入" + str(sum(col_name)) + "条数据 ]")
         self.client.close()
 
     def process_item(self, item, spider):
@@ -88,4 +88,4 @@ class MongoPipeline(object):
                 return item
             return None
         else:
-            print("重复跳过")
+            print("该数据已录入，重复跳过")
