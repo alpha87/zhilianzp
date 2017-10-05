@@ -8,6 +8,6 @@ db = client['zhilianzp']
 col = db['job']
 
 wel = input(">>> ")
-a = col.find({'welfare':re.compile(wel)})
+a = col.find({'welfare': re.compile(wel)})
 for b in a:
     print(b)
