@@ -38,15 +38,7 @@ class ZhilianSpider(scrapy.Spider):
         zp = ZhilianSpider()
 
         # 职位页面
-        job_url5 = response.xpath(
-            "/html/head/link[5]/@href").extract_first().startswith("http://jobs")
-        # job_url6 = response.xpath("/html/head/link[6]/@href").extract_first().startswith("http://jobs")
-        if job_url5:
-            job_url = response.xpath(
-                "/html/head/link[5]/@href").extract_first()
-        else:
-            job_url = response.xpath(
-                "/html/head/link[6]/@href").extract_first()
+        job_url = response.url
         # 职位名称
         job_name = response.xpath(
             "//div[@class='inner-left fl']/h1/text()").extract_first()

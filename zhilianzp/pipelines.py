@@ -6,6 +6,7 @@
 # See: http://doc.scrapy.org/en/latest/topics/item-pipeline.html
 import pymongo
 import time
+from logging import getLogger
 
 
 class ZhilianzpPipeline(object):
@@ -35,19 +36,21 @@ class WritePipeline(object):
 class TimePipeline(object):
     """获取爬虫用时"""
 
+    def __init__(self):
+        self.logger = getLogger(__name__)
+
     def open_spider(self, spider):
-        print("[ Spider Start ]")
+        self.logger.debug("Spider Start")
         self.start_time = time.time()
 
     def close_spider(self, spider):
         self.end_time = time.time()
         used_time = self.end_time - self.start_time
-        print("***** 共花费" + str(int(used_time)) + "秒 *****")
-        print(("[ Spider End ]"))
+        self.logger.debug("Used %s 秒" % str(int(used_time)))
+        self.logger.debug("Spider End")
 
 
 class MongoPipeline(object):
-
     """
     保存到Mongo数据库，按地名分数据库，根据工作职位分集合
     """
@@ -57,6 +60,7 @@ class MongoPipeline(object):
     def __init__(self, mongo_uri, mongo_db):
         self.mongo_uri = mongo_uri
         self.mongo_db = mongo_db
+        self.logger = getLogger(__name__)
 
     @classmethod
     def from_crawler(cls, crawler):
@@ -77,15 +81,15 @@ class MongoPipeline(object):
         for com in coms:
             n = self.db[com].count()
             col_name.append(n)
-        print("\n[ 数据库中共存入" + str(sum(col_name)) + "条数据 ]")
+        self.logger.debug("数据库中共存入 %s 条数据" % str(sum(col_name)))
         self.client.close()
 
     def process_item(self, item, spider):
         if not self.db[item['vocation']].find_one(
                 {"job_url": item['job_url']}):  # 根据职位页面去重
             if self.db[item['vocation']].insert(dict(item)):
-                print("Save to MongoDB.")
+                self.logger.debug("Save to MongoDB")
                 return item
             return None
         else:
-            print("该数据已录入，重复跳过")
+            self.logger.debug("该数据已录入，重复跳过")

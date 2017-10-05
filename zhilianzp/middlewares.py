@@ -9,10 +9,12 @@ from .untils import get_proxy, get_proxies, proxies
 from scrapy import signals
 from fake_useragent import UserAgent
 from logging import getLogger
-import random
 
 
 class ProxyMiddleware(object):
+    def __init__(self):
+        self.logger = getLogger(__name__)
+
     def get_new_proxy(self):
         using_ip = proxies()
         return using_ip
@@ -20,11 +22,11 @@ class ProxyMiddleware(object):
     using_ip = proxies()
 
     def process_request(self, request, spider):
-        print("正在使用代理 >>> ", self.using_ip)
+        self.logger.debug("Proxy: %s" % self.using_ip)
         try:
             request.meta['proxy'] = "http://" + self.using_ip
         except TimeoutError and TypeError:
-            print("原代理出错，已更换代理 >>> ", self.get_new_proxy())
+            print("原代理出错，已更换代理>>> ", self.get_new_proxy())
             request.meta['proxy'] = "http://" + self.get_new_proxy()
 
 
@@ -35,12 +37,13 @@ class UserAgentMiddleware(object):
     def process_request(self, request, spider):
         ua = UserAgent()
         user_agent = ua.random
-        self.logger.debug("正在使用的浏览器请求头为 %s" % user_agent)
+        self.logger.debug("User Agent: %s" % user_agent)
         request.headers["User-Agent"] = user_agent
 
 
+"""
 class Proxy0Middleware(object):
-    """使用代理ip"""
+    ""使用代理ip""
     proxy = get_proxy()
     print("调用的代理IP", proxy)
 
@@ -62,6 +65,7 @@ class Proxy1Middleware(object):
         using_ip = random.choice(self.proxy_list)
         print("Using proxy >>> ", using_ip)
         request.meta['proxy'] = "http://" + using_ip
+"""
 
 
 class ZhilianzpSpiderMiddleware(object):
