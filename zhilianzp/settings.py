@@ -66,7 +66,8 @@ DEFAULT_REQUEST_HEADERS = {
 # Enable or disable downloader middlewares
 # See http://scrapy.readthedocs.org/en/latest/topics/downloader-middleware.html
 DOWNLOADER_MIDDLEWARES = {
-    'zhilianzp.middlewares.Proxy2Middleware': 543,
+    'zhilianzp.middlewares.ProxyMiddleware': 543,
+    'zhilianzp.middlewares.UserAgentMiddleware': 544,
 }
 
 # Enable or disable extensions
