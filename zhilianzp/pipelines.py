@@ -40,14 +40,14 @@ class TimePipeline(object):
         self.logger = getLogger(__name__)
 
     def open_spider(self, spider):
-        self.logger.debug("Spider Start")
+        self.logger.debug("采集开始")
         self.start_time = time.time()
 
     def close_spider(self, spider):
         self.end_time = time.time()
         used_time = self.end_time - self.start_time
-        self.logger.debug("Used %s 秒" % str(int(used_time)))
-        self.logger.debug("Spider End")
+        self.logger.debug("共使用 %s 秒" % str(int(used_time)))
+        self.logger.debug("采集结束")
 
 
 class MongoPipeline(object):
@@ -88,7 +88,7 @@ class MongoPipeline(object):
         if not self.db[item['vocation']].find_one(
                 {"job_url": item['job_url']}):  # 根据职位页面去重
             if self.db[item['vocation']].insert(dict(item)):
-                self.logger.debug("Save to MongoDB")
+                self.logger.debug("数据成功保存到数据库")
                 return item
             return None
         else:
