@@ -5,7 +5,7 @@
 # See documentation in:
 # http://doc.scrapy.org/en/latest/topics/spider-middleware.html
 
-from .untils import get_proxy, get_proxies, proxies
+from .untils import proxies, get_proxy, get_proxies
 from scrapy import signals
 from fake_useragent import UserAgent
 from logging import getLogger
@@ -25,9 +25,13 @@ class ProxyMiddleware(object):
         self.logger.debug("Proxy: %s" % self.using_ip)
         try:
             request.meta['proxy'] = "http://" + self.using_ip
-        except TimeoutError and TypeError:
-            print("原代理出错，已更换代理>>> ", self.get_new_proxy())
-            request.meta['proxy'] = "http://" + self.get_new_proxy()
+        except TimeoutError:
+            self.logger.debug("Time out")
+
+    def process_exception(self, request, exception, spider):
+        new_proxy = self.get_new_proxy()
+        self.logger.debug("New Proxy: ", new_proxy)
+        request.meta['proxy'] = "http://" + new_proxy
 
 
 class UserAgentMiddleware(object):

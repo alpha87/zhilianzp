@@ -15,8 +15,8 @@ SPIDER_MODULES = ['zhilianzp.spiders']
 NEWSPIDER_MODULE = 'zhilianzp.spiders'
 
 # Mongo数据库配置
-MONGO_URI = '127.0.0.1'
-MONGO_DB = 'Beijing'
+MONGO_URI = '119.28.85.68'
+MONGO_DB = '北京'
 
 # 生成日志文件
 #LOG_LEVEL= 'DEBUG'

@@ -3,8 +3,8 @@
 import pymongo
 
 
-client = pymongo.MongoClient('127.0.0.1', 27017)
-db = client['Beijing']
+client = pymongo.MongoClient('119.28.85.68', 27017)
+db = client['北京']
 coms = db.collection_names()
 s = list()
 for com in coms:

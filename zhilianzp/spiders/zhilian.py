@@ -46,7 +46,7 @@ class ZhilianSpider(scrapy.Spider):
         welfare = response.css("div .welfare-tab-box span").extract()
         # 职位月薪
         job_pay = response.xpath(
-            "/html/body/div[6]/div[1]/ul/li[1]/strong/text()").extract()[0]
+            "/html/body/div[6]/div[1]/ul/li[1]/strong/text()").extract()
         # 发布日期
         date = response.css('#span4freshdate::text').extract()[0]
         # 工作经验
@@ -125,7 +125,7 @@ class ZhilianSpider(scrapy.Spider):
                 "</span>",
                 "")
         if job_pay:
-            item['job_pay'] = job_pay.replace("\xa0", "")
+            item['job_pay'] = "".join(job_pay).replace("\xa0", "")
         item['date'] = date
         if expe:
             item['expe'] = expe
