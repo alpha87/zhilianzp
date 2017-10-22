@@ -1,41 +1,18 @@
 # -*- coding: utf-8 -*-
 import scrapy
-from random import randint
-import time
 from zhilianzp.items import ZhilianzpItem
 from ..zhilian_url import main
-from bs4 import BeautifulSoup as bs
-import re
 
 
 class ZhilianSpider(scrapy.Spider):
     name = 'zhilian'
     allowed_domains = ['zhaopin.com']
-    # 利用zhilian_url生成职位列表
+    # 利用zhilian_url.py生成职位列表
     all_urls = main()
     start_urls = all_urls
 
-    def re_zhiwei(self, content):
-        """提取职位描述"""
-        pattern = re.compile(
-            "<!-- SWSStringCutStart -->(.*?)<!-- SWSStringCutEnd -->", re.S)
-        items = re.findall(pattern, content)
-        return items
-
-    def re_han(self, content):
-        """提取公司描述"""
-        pattern = re.compile(">该公司其他职位</a></h5>(.*?)<h3></h3>", re.S)
-        items = re.findall(pattern, content)
-        return items
-
-    def bs_parse(self, content):
-        """去除公司描述中的html标签"""
-        html = bs(content, 'lxml')
-        return html.get_text()
-
     def parse(self, response):
         item = ZhilianzpItem()
-        zp = ZhilianSpider()
 
         # 职位页面
         job_url = response.url
@@ -112,77 +89,27 @@ class ZhilianSpider(scrapy.Spider):
             comp_location = response.css(
                 ".company-box .terminal-ul.clearfix.terminal-company.mt20 li:nth-child(4) strong::text").extract()
 
-        if job_url:
-            item['job_url'] = job_url
-        if job_name:
-            item['job_name'] = job_name
-        if welfare:
-            item['welfare'] = "".join(welfare).replace(
-                '</span><span>',
-                ";").replace(
-                "<span>",
-                "").replace(
-                "</span>",
-                "")
-        if job_pay:
-            item['job_pay'] = "".join(job_pay).replace("\xa0", "")
+        item['job_url'] = job_url
+        item['job_name'] = job_name
+        item['welfare'] = welfare
+        item['job_pay'] = job_pay
         item['date'] = date
-        if expe:
-            item['expe'] = expe
-        if number:
-            item['number'] = number
-        if job_location:
-            item['job_location'] = job_location.strip()
-        if job_nature:
-            item['job_nature'] = job_nature
-        if education:
-            item['education'] = education
-        if job_type:
-            item['job_type'] = job_type
-        if job_desc:
-            item['job_desc'] = zp.bs_parse("".join(
-                zp.re_zhiwei(job_desc))).replace(
-                "</p><p>",
-                "").replace(
-                "<br>",
-                "").replace(
-                "\xa0", "").strip()
-        else:
-            item['job_desc'] = "None"
-        if introduce:
-            item['introduce'] = zp.bs_parse(
-                "".join(
-                    zp.re_han(introduce))).strip().replace(
-                "\xa0",
-                "").replace(
-                "\n",
-                "").replace(
-                    "\u3000",
-                "")
-        else:
-            item['introduce'] = "None"
-        if str(logo).startswith("//company"):
-            item['logo'] = "http:" + logo
-        else:
-            item['logo'] = logo
-        if comp_name:
-            item['comp_name'] = comp_name[0]
-        else:
-            item['comp_name'] = "None"
-        if comp_size:
-            item['comp_size'] = comp_size
-        if comp_nature:
-            item['comp_nature'] = comp_nature
-        if vocation:
-            item['vocation'] = vocation
-        if home_page:
-            item['home_page'] = home_page[0]
-        else:
-            item['home_page'] = "None"
-        if comp_location:
-            item['comp_location'] = comp_location[0].strip()
-        else:
-            item['comp_location'] = "None"
+        item['expe'] = expe
+        item['number'] = number
+        item['job_location'] = job_location.strip()
+        item['job_nature'] = job_nature
+        item['education'] = education
+        item['job_type'] = job_type
+        item['job_desc'] = job_desc
+        item['introduce'] = introduce
+        item['logo'] = logo
+        item['comp_name'] = comp_name[0] if comp_name else "None"
+        item['comp_size'] = comp_size
+        item['comp_nature'] = comp_nature
+        item['vocation'] = vocation
+        item['home_page'] = home_page[0] if home_page else "None"
+        item['comp_location'] = comp_location[0].strip(
+        ) if comp_location else "None"
 
         # time.sleep(randint(1, 4))  # 加入随机停顿时间
         yield item

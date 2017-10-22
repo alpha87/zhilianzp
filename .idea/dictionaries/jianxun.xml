@@ -2,6 +2,8 @@
   <dictionary name="jianxun">
     <words>
       <w>useragent</w>
+      <w>zhaopin</w>
+      <w>zhilian</w>
     </words>
   </dictionary>
 </component>

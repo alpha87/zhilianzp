@@ -1,0 +1,6 @@
+*.xml
+*.iml
+*.log
+*.pyc
+zhilianzp/__pycache__/*.pyc
+.idea/dictionaries/*.xml

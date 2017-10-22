@@ -81,7 +81,8 @@ DOWNLOADER_MIDDLEWARES = {
 ITEM_PIPELINES = {
     #'zhilianzp.pipelines.ZhilianzpPipeline': 300,
     #'zhilianzp.pipelines.WritePipeline':300,
-    'zhilianzp.pipelines.MongoPipeline': 300,
+    #'zhilianzp.pipelines.MongoPipeline': 300,
+    'zhilianzp.pipelines.TextPipeline':300,
     'zhilianzp.pipelines.TimePipeline': 299,
 }
 

@@ -51,7 +51,7 @@ def main():
     html = parse_job_url()
     pool = Pool()
     job_lists = pool.map(get_job_list, html)
-    return job_lists
+    return sum(job_lists, [])
 
 
 if __name__ == '__main__':

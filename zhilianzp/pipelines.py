@@ -6,6 +6,8 @@
 # See: http://doc.scrapy.org/en/latest/topics/item-pipeline.html
 import pymongo
 import time
+import re
+from bs4 import BeautifulSoup as bs
 from logging import getLogger
 
 
@@ -15,20 +17,51 @@ class ZhilianzpPipeline(object):
         return item
 
 
-class WritePipeline(object):
-    """
-    写入txt文件
-    """
+class TextPipeline(object):
+    """清洁数据"""
+
+    def re_zhiwei(self, content):
+        """提取职位描述"""
+        pattern = re.compile(
+            "<!-- SWSStringCutStart -->(.*?)<!-- SWSStringCutEnd -->", re.S)
+        items = re.findall(pattern, content)
+        return items
+
+    def re_han(self, content):
+        """提取公司描述"""
+        pattern = re.compile(">该公司其他职位</a></h5>(.*?)<h3></h3>", re.S)
+        items = re.findall(pattern, content)
+        return items
+
+    def bs_parse(self, content):
+        """去除公司描述中的html标签"""
+        html = bs(content, 'lxml')
+        return html.get_text()
 
     def process_item(self, item, spider):
-        with open('job_type.txt', 'a') as f:
-            f.write(item['job_type'] + ";")
-
-        with open('education.txt', 'a') as f:
-            f.write(item['education'] + ";")
-
-        with open('job_desc.txt', 'a') as f:
-            f.write(item['job_desc'] + "\n")
+        try:
+            if item['welfare']:
+                item['welfare'] = self.bs_parse("".join(item['welfare']).replace('</span><span>', ";"))
+        except KeyError:
+            item['welfare'] = "None"
+        item['job_pay'] = "".join(item['job_pay']).replace("\xa0", "") if item['job_pay'] else None
+        if item['job_desc']:
+            item['job_desc'] = self.bs_parse("".join(self.re_zhiwei(item['job_desc']))).replace(
+                "</p><p>", "").replace("<br>", "").replace("\xa0", "").strip()
+        elif item['job_desc'] is None:
+            item['job_desc'] = "None"
+        if item['introduce']:
+            item['introduce'] = self.bs_parse("".join(self.re_han(item['introduce']))).strip().replace(
+                "\xa0", "").replace("\n", "").replace("\u3000", "")
+        elif item['introduce'] is None:
+            item['introduce'] = "None"
+        try:
+            if item['logo']:
+                item['logo'] = item['logo']
+            elif str(item['logo']).startswith("//company"):
+                item['logo'] = "http:" + item['logo']
+        except KeyError:
+            item['logo'] = "None"
 
         return item
 
@@ -93,3 +126,21 @@ class MongoPipeline(object):
             return None
         else:
             self.logger.debug("该数据已录入，重复跳过")
+
+
+class WritePipeline(object):
+    """
+    写入txt文件
+    """
+
+    def process_item(self, item, spider):
+        with open('job_type.txt', 'a') as f:
+            f.write(item['job_type'] + ";")
+
+        with open('education.txt', 'a') as f:
+            f.write(item['education'] + ";")
+
+        with open('job_desc.txt', 'a') as f:
+            f.write(item['job_desc'] + "\n")
+
+        return item
