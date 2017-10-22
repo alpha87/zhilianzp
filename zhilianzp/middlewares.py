@@ -27,11 +27,9 @@ class ProxyMiddleware(object):
             request.meta['proxy'] = "http://" + self.using_ip
         except TimeoutError:
             self.logger.debug("Time out")
-
-    def process_exception(self, request, exception, spider):
-        new_proxy = self.get_new_proxy()
-        self.logger.debug("New Proxy: ", new_proxy)
-        request.meta['proxy'] = "http://" + new_proxy
+            new_proxy = self.get_new_proxy()
+            self.logger.debug("New Proxy: ", new_proxy)
+            request.meta['proxy'] = "http://" + new_proxy
 
 
 class UserAgentMiddleware(object):

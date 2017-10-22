@@ -1,8 +1,8 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-from zhilianzp.zhilian_num import get_job_id, get_city_id, get_industry_dict
+from zhilianzp.zhilian_num import get_industry_dict, get_job_id, get_city_id
 import requests
-import re
+from multiprocessing import Pool
 from pyquery import PyQuery as pq
 
 
@@ -12,25 +12,22 @@ from pyquery import PyQuery as pq
 #     return ["http://sou.zhaopin.com/jobs/searchresult.ashx?in={}&jl={}&p=1".format(
 #         jobnum, citynum) for jobnum in job_id for citynum in city_id]
 
-def create_url():
+def create_job_url():
     """
-    如果要爬取所有地区的信息，并分类。需要：
-    在item中创建city字段，数据库命名时使用item['city']命名即可。
+    如果要爬取所有地区的信息，并分类。
+    需要在item中创建city字段，数据库命名时使用item['city']命名即可。
     """
-    job_id = get_industry_dict()
-    return [
-        "http://sou.zhaopin.com/jobs/searchresult.ashx?in={}&jl=530&p={}".format(
-            jobnum, page) for jobnum in list(
-            job_id.keys()) for page in range(
-            21, 31)]
+    industry_id = get_industry_dict().keys()
+    return ["http://sou.zhaopin.com/jobs/searchresult.ashx?in={}&jl=530&p={}".format(
+        industrynum, page) for industrynum in list(industry_id) for page in range(1, 2)]
 
 
-def parse_url():
+def parse_job_url():
     """获取行业职位相关信息，生成列表"""
     headers = {
         "User-Agent": "Mozilla/5.0 (Windows; U; Windows NT 5.1; en-US) AppleWebKit/533.20.25 (KHTML, like Gecko) Version/5.0.3 Safari/533.19.4"
     }
-    urls = create_url()
+    urls = create_job_url()
     url_box = list()
     for url in urls:
         html = requests.get(url, headers=headers)
@@ -38,22 +35,22 @@ def parse_url():
     return url_box
 
 
-def get_job_list(texts):
+def get_job_list(u):
     """通过解析上一函数列表，生成各职位详情页URL"""
     url_box = list()
-    for text in texts:
-        doc = pq(text)
-        job_urls = doc('#newlist_list_content_table').find('a').items()
-        for url in job_urls:
-            if url.attr.href.startswith('http://jobs'):
-                html = url.attr.href
-                url_box.append(html)
+    doc = pq(u)
+    job_urls = doc('#newlist_list_content_table').find('a').items()
+    for url in job_urls:
+        if url.attr.href.startswith('http://jobs'):
+            html = url.attr.href
+            url_box.append(html)
     return url_box
 
 
 def main():
-    html = parse_url()
-    job_lists = get_job_list(html)
+    html = parse_job_url()
+    pool = Pool()
+    job_lists = pool.map(get_job_list, html)
     return job_lists
 
 
