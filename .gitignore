@@ -3,4 +3,5 @@
 *.log
 *.pyc
 zhilianzp/__pycache__/*.pyc
-.idea/dictionaries/*.xml
+.idea/
+__pycache__/
