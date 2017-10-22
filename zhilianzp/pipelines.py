@@ -18,7 +18,7 @@ class ZhilianzpPipeline(object):
 
 
 class TextPipeline(object):
-    """清洁数据"""
+    """清洗数据"""
 
     def re_zhiwei(self, content):
         """提取职位描述"""
