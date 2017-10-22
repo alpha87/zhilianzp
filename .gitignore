@@ -1,8 +1,4 @@
-*.xml
-*.iml
 *.log
-*.pyc
-zhilianzp/__pycache__/*.pyc
 .idea/
 __pycache__/
 api/
