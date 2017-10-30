@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 import scrapy
-from utils.zhilian_url import main
+
+from utils.getter import GetJobUrl
 from zhilianzp.items import ZhilianzpItem
 
 
@@ -8,7 +9,8 @@ class ZhilianSpider(scrapy.Spider):
     name = 'zhilian'
     allowed_domains = ['zhaopin.com']
     # 利用zhilian_url.py生成职位列表
-    all_urls = main()
+    geturl = GetJobUrl()
+    all_urls = geturl.parse_url()
     start_urls = all_urls
 
     def parse(self, response):
