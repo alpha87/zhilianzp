@@ -1,20 +1,9 @@
 # -*- coding: utf-8 -*-
-
-# Define your item pipelines here
-#
-# Don't forget to add your pipeline to the ITEM_PIPELINES setting
-# See: http://doc.scrapy.org/en/latest/topics/item-pipeline.html
 import pymongo
 import time
 import re
 from bs4 import BeautifulSoup as bs
 from logging import getLogger
-
-
-class ZhilianzpPipeline(object):
-
-    def process_item(self, item, spider):
-        return item
 
 
 class TextPipeline(object):
@@ -41,20 +30,45 @@ class TextPipeline(object):
     def process_item(self, item, spider):
         try:
             if item['welfare']:
-                item['welfare'] = self.bs_parse("".join(item['welfare']).replace('</span><span>', ";"))
+                item['welfare'] = self.bs_parse(
+                    "".join(
+                        item['welfare']).replace(
+                        '</span><span>', ";"))
         except KeyError:
             item['welfare'] = "None"
-        item['job_pay'] = "".join(item['job_pay']).replace("\xa0", "") if item['job_pay'] else None
+
+        item['job_pay'] = "".join(
+            item['job_pay']).replace(
+            "\xa0", "") if item['job_pay'] else None
+
         if item['job_desc']:
-            item['job_desc'] = self.bs_parse("".join(self.re_zhiwei(item['job_desc']))).replace(
-                "</p><p>", "").replace("<br>", "").replace("\xa0", "").strip()
+            item['job_desc'] = self.bs_parse(
+                "".join(
+                    self.re_zhiwei(
+                        item['job_desc']))).replace(
+                "</p><p>",
+                "").replace(
+                    "<br>",
+                    "").replace(
+                        "\xa0",
+                "").strip()
         elif item['job_desc'] is None:
             item['job_desc'] = "None"
+
         if item['introduce']:
-            item['introduce'] = self.bs_parse("".join(self.re_han(item['introduce']))).strip().replace(
-                "\xa0", "").replace("\n", "").replace("\u3000", "")
+            item['introduce'] = self.bs_parse(
+                "".join(
+                    self.re_han(
+                        item['introduce']))).strip().replace(
+                "\xa0",
+                "").replace(
+                    "\n",
+                    "").replace(
+                        "\u3000",
+                "")
         elif item['introduce'] is None:
             item['introduce'] = "None"
+
         try:
             if item['logo']:
                 item['logo'] = item['logo']
@@ -95,6 +109,7 @@ class MongoPipeline(object):
         self.mongo_db = mongo_db
         self.logger = getLogger(__name__)
 
+    # todo 获取地区代码自动生成地区中文名称集合
     @classmethod
     def from_crawler(cls, crawler):
         return cls(
@@ -143,4 +158,10 @@ class WritePipeline(object):
         with open('job_desc.txt', 'a') as f:
             f.write(item['job_desc'] + "\n")
 
+        return item
+
+
+class ZhilianzpPipeline(object):
+
+    def process_item(self, item, spider):
         return item

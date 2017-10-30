@@ -1,14 +1,4 @@
 # -*- coding: utf-8 -*-
-
-# Scrapy settings for zhilianzp project
-#
-# For simplicity, this file contains only settings considered important or
-# commonly used. You can find more settings consulting the documentation:
-#
-#     http://doc.scrapy.org/en/latest/topics/settings.html
-#     http://scrapy.readthedocs.org/en/latest/topics/downloader-middleware.html
-#     http://scrapy.readthedocs.org/en/latest/topics/spider-middleware.html
-
 BOT_NAME = 'zhilianzp'
 
 SPIDER_MODULES = ['zhilianzp.spiders']
@@ -17,6 +7,11 @@ NEWSPIDER_MODULE = 'zhilianzp.spiders'
 # Mongo数据库配置
 MONGO_URI = '119.28.85.68'
 MONGO_DB = '北京'
+
+# Redis配置
+HOST = "localhost"
+PORT = 27017
+PASSWORD = None
 
 # 生成日志文件
 #LOG_LEVEL= 'DEBUG'
@@ -35,7 +30,7 @@ MONGO_DB = '北京'
 ROBOTSTXT_OBEY = False
 
 # Configure maximum concurrent requests performed by Scrapy (default: 16)
-CONCURRENT_REQUESTS = 16
+# CONCURRENT_REQUESTS = 16
 
 # Configure a delay for requests for the same website (default: 0)
 # See http://scrapy.readthedocs.org/en/latest/topics/settings.html#download-delay
@@ -50,6 +45,9 @@ COOKIES_ENABLED = False
 
 # Disable Telnet Console (enabled by default)
 #TELNETCONSOLE_ENABLED = False
+
+# No redirection
+REDIRECT_ENABLE = False
 
 # Override the default request headers:
 DEFAULT_REQUEST_HEADERS = {
@@ -82,7 +80,7 @@ ITEM_PIPELINES = {
     #'zhilianzp.pipelines.ZhilianzpPipeline': 300,
     #'zhilianzp.pipelines.WritePipeline':300,
     'zhilianzp.pipelines.MongoPipeline': 301,
-    'zhilianzp.pipelines.TextPipeline':300,
+    'zhilianzp.pipelines.TextPipeline': 300,
     'zhilianzp.pipelines.TimePipeline': 299,
 }
 

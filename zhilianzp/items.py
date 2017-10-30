@@ -9,7 +9,6 @@ from scrapy import Item, Field
 
 
 class ZhilianzpItem(Item):
-    # name = scrapy.Field()
 
     # 职位页面
     job_url = Field()

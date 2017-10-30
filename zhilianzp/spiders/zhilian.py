@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 import scrapy
+from utils.zhilian_url import main
 from zhilianzp.items import ZhilianzpItem
-from ..zhilian_url import main
 
 
 class ZhilianSpider(scrapy.Spider):
@@ -13,7 +13,6 @@ class ZhilianSpider(scrapy.Spider):
 
     def parse(self, response):
         item = ZhilianzpItem()
-
         # 职位页面
         job_url = response.url
         # 职位名称
@@ -37,10 +36,7 @@ class ZhilianSpider(scrapy.Spider):
             "/html/body/div[6]/div[1]/ul/li[2]/strong/a/text()").extract_first()
         dist = response.xpath(
             "/html/body/div[6]/div[1]/ul/li[2]/strong/text()").extract_first()
-        if dist:
-            job_location = city + dist
-        else:
-            job_location = city
+        job_location = city + dist if dist else city
         # 工作性质
         job_nature = response.xpath(
             "/html/body/div[6]/div[1]/ul/li[4]/strong/text()").extract()[0]
@@ -53,12 +49,8 @@ class ZhilianSpider(scrapy.Spider):
         # 职位描述
         job_desc = response.css(".tab-inner-cont").extract()[0]
         # 公司介绍
-        string = response.css(".tab-inner-cont").extract()[1]
-        table = response.css(".previewConInbox").extract_first()
-        if string:
-            introduce = string
-        elif table:
-            introduce = table
+        string = response.css(".tab-inner-cont").extract()[1]  # 字符串格式
+        table = response.css(".previewConInbox").extract_first()  # 表格格式
         # 公司图标
         logo = response.css(
             ".company-box .img-border a img::attr(src)").extract_first()
@@ -101,15 +93,12 @@ class ZhilianSpider(scrapy.Spider):
         item['education'] = education
         item['job_type'] = job_type
         item['job_desc'] = job_desc
-        item['introduce'] = introduce
+        item['introduce'] = string if string else table
         item['logo'] = logo
         item['comp_name'] = comp_name[0] if comp_name else "None"
         item['comp_size'] = comp_size
         item['comp_nature'] = comp_nature
         item['vocation'] = vocation
         item['home_page'] = home_page[0] if home_page else "None"
-        item['comp_location'] = comp_location[0].strip(
-        ) if comp_location else "None"
-
-        # time.sleep(randint(1, 4))  # 加入随机停顿时间
+        item['comp_location'] = comp_location[0].strip() if comp_location else "None"
         yield item

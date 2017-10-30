@@ -1,25 +1,27 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-from zhilianzp.zhilian_num import get_industry_dict, get_job_id, get_city_id
-import requests
 from multiprocessing import Pool
+import requests
 from pyquery import PyQuery as pq
+from utils.zhilian_num import ParseUrl
 
 
 # def create_url(): # 利用职业和地区代码生成url
-#     job_id = get_job_id()
-#     city_id = get_city_id()
+#     parseurl = ParseUrl()
+#     industry_id = parseurl.get_industry_dict().keys()
+#     city_id = parseurl.get_city_dict().keys()
 #     return ["http://sou.zhaopin.com/jobs/searchresult.ashx?in={}&jl={}&p=1".format(
-#         jobnum, citynum) for jobnum in job_id for citynum in city_id]
+#         industrynum, citynum) for industrynum in list(industry_id) for citynum in list(city_id)]
 
 def create_job_url():
     """
     如果要爬取所有地区的信息，并分类。
     需要在item中创建city字段，数据库命名时使用item['city']命名即可。
     """
-    industry_id = get_industry_dict().keys()
-    return ["http://sou.zhaopin.com/jobs/searchresult.ashx?in={}&jl=530&p={}".format(
-        industrynum, page) for industrynum in list(industry_id) for page in range(1, 2)]
+    parseurl = ParseUrl()
+    industry_id = parseurl.get_industry_dict().keys()
+    return ["http://sou.zhaopin.com/jobs/searchresult.ashx?in={}&jl={}&p={}".format(
+        industrynum, 530, page) for industrynum in list(industry_id) for page in range(1, 2)]
 
 
 def parse_job_url():
