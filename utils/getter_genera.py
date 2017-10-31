@@ -2,22 +2,24 @@
 # -*- coding: utf-8 -*-
 import requests
 from utils.zhilian_num import ParseUrl
-from fake_useragent import UserAgent
+from .useragent import agents
+from random import choice
 from multiprocessing import Pool
 from pyquery import PyQuery as pq
 
 
 class GetJobUrl(object):
     def create_job_url(self):
-        """列表生成url, 此处应该修改为自动生成"""
+        """使用生成器"""
         parseurl = ParseUrl()
         industry_id = parseurl.get_industry_dict().keys()
-        return ["http://sou.zhaopin.com/jobs/searchresult.ashx?in={}&jl={}&p={}".format(
-                industrynum, 530, page) for industrynum in list(industry_id) for page in range(1, 10)]
+        for page in range(1, 3):
+            for industrynum in list(industry_id):
+                yield "http://sou.zhaopin.com/jobs/searchresult.ashx?in={}&jl={}&p={}".format(industrynum, 530, page)
 
     def parse_job_url(self):
-        ua = UserAgent()
-        headers = {"User-Agent": ua.random}
+        hd = choice(agents)
+        headers = {"User-Agent":hd}
         urls = self.create_job_url()
         text_case = [requests.get(url, headers=headers).text for url in urls]
         return text_case
