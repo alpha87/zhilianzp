@@ -13,7 +13,7 @@ class GetJobUrl(object):
         """使用生成器"""
         parseurl = ParseUrl()
         industry_id = parseurl.get_industry_dict().keys()
-        for page in range(1, 3):
+        for page in range(1, 6):
             for industrynum in list(industry_id):
                 yield "http://sou.zhaopin.com/jobs/searchresult.ashx?in={}&jl={}&p={}".format(industrynum, 530, page)
 
@@ -21,8 +21,9 @@ class GetJobUrl(object):
         hd = choice(agents)
         headers = {"User-Agent":hd}
         urls = self.create_job_url()
-        text_case = [requests.get(url, headers=headers).text for url in urls]
-        return text_case
+        for url in urls:
+            text = requests.get(url, headers=headers).text
+            yield text
 
     def get_job_list(self, u):
         doc = pq(u)

@@ -11,13 +11,15 @@ class GetJobUrl(object):
     def create_job_url(self):
         """列表生成url, 此处应该修改为自动生成"""
         parseurl = ParseUrl()
+        print("create job url")
         industry_id = parseurl.get_industry_dict().keys()
         return ["http://sou.zhaopin.com/jobs/searchresult.ashx?in={}&jl={}&p={}".format(
-                industrynum, 530, page) for industrynum in list(industry_id) for page in range(1, 10)]
+                industrynum, 530, page) for industrynum in list(industry_id) for page in range(1, 2)]
 
     def parse_job_url(self):
         ua = UserAgent()
-        headers = {"User-Agent": ua.random}
+        hd = ua.random
+        headers = {"User-Agent": hd}
         urls = self.create_job_url()
         text_case = [requests.get(url, headers=headers).text for url in urls]
         return text_case

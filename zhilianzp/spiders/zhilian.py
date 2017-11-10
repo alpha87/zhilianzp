@@ -1,14 +1,12 @@
 # -*- coding: utf-8 -*-
 import scrapy
-
-from utils.getter import GetJobUrl
+from utils.getter_genera import GetJobUrl
 from zhilianzp.items import ZhilianzpItem
 
 
 class ZhilianSpider(scrapy.Spider):
     name = 'zhilian'
     allowed_domains = ['zhaopin.com']
-    # 利用zhilian_url.py生成职位列表
     geturl = GetJobUrl()
     all_urls = geturl.parse_url()
     start_urls = all_urls
@@ -26,13 +24,13 @@ class ZhilianSpider(scrapy.Spider):
         job_pay = response.xpath(
             "/html/body/div[6]/div[1]/ul/li[1]/strong/text()").extract()
         # 发布日期
-        date = response.css('#span4freshdate::text').extract()[0]
+        date = response.css('#span4freshdate::text').extract_first()
         # 工作经验
         expe = response.xpath(
-            "/html/body/div[6]/div[1]/ul/li[5]/strong/text()").extract()[0]
+            "/html/body/div[6]/div[1]/ul/li[5]/strong/text()").extract_first()
         # 招聘人数
         number = response.xpath(
-            "/html/body/div[6]/div[1]/ul/li[7]/strong/text()").extract()[0]
+            "/html/body/div[6]/div[1]/ul/li[7]/strong/text()").extract_first()
         # 工作地点
         city = response.xpath(
             "/html/body/div[6]/div[1]/ul/li[2]/strong/a/text()").extract_first()
@@ -41,15 +39,15 @@ class ZhilianSpider(scrapy.Spider):
         job_location = city + dist if dist else city
         # 工作性质
         job_nature = response.xpath(
-            "/html/body/div[6]/div[1]/ul/li[4]/strong/text()").extract()[0]
+            "/html/body/div[6]/div[1]/ul/li[4]/strong/text()").extract_first()
         # 最低学历
         education = response.xpath(
-            "/html/body/div[6]/div[1]/ul/li[6]/strong/text()").extract()[0]
+            "/html/body/div[6]/div[1]/ul/li[6]/strong/text()").extract_first()
         # 职位类别
         job_type = response.xpath(
-            "/html/body/div[6]/div[1]/ul/li[8]/strong/a/text()").extract()[0]
+            "/html/body/div[6]/div[1]/ul/li[8]/strong/a/text()").extract_first()
         # 职位描述
-        job_desc = response.css(".tab-inner-cont").extract()[0]
+        job_desc = response.css(".tab-inner-cont").extract_first()
         # 公司介绍
         string = response.css(".tab-inner-cont").extract()[1]  # 字符串格式
         table = response.css(".previewConInbox").extract_first()  # 表格格式
@@ -65,13 +63,13 @@ class ZhilianSpider(scrapy.Spider):
                 "/html/body/div[6]/div[2]/div[1]/p/a/text()").extract()
         # 公司规模
         comp_size = response.xpath(
-            "/html/body/div[6]/div[2]/div[1]/ul/li[1]/strong/text()").extract()[0]
+            "/html/body/div[6]/div[2]/div[1]/ul/li[1]/strong/text()").extract_first()
         # 公司性质
         comp_nature = response.xpath(
-            "/html/body/div[6]/div[2]/div[1]/ul/li[2]/strong/text()").extract()[0]
+            "/html/body/div[6]/div[2]/div[1]/ul/li[2]/strong/text()").extract_first()
         # 公司行业
         vocation = response.xpath(
-            "/html/body/div[6]/div[2]/div[1]/ul/li[3]/strong/a/text()").extract()[0]
+            "/html/body/div[6]/div[2]/div[1]/ul/li[3]/strong/a/text()").extract_first()
         # 公司主页
         home_page = response.xpath(
             "/html/body/div[6]/div[2]/div[1]/ul/li[4]/strong/a/text()").extract()
