@@ -1,11 +1,13 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
 import requests
-from utils.zhilian_num import ParseUrl
-from .useragent import agents
 from random import choice
-from multiprocessing import Pool
+from .zhilian_num import ParseUrl
+from .useragent import agents
 from pyquery import PyQuery as pq
+import time
 
 
 class GetJobUrl(object):
@@ -28,12 +30,18 @@ class GetJobUrl(object):
     def get_job_list(self, u):
         doc = pq(u)
         job_urls = doc('#newlist_list_content_table').find('a').items()
-        html_list = [
-            url.attr.href for url in job_urls if url.attr.href.startswith('http://jobs')]
-        return html_list
+        for url in job_urls:
+            if url.attr.href.startswith('http://jobs'):
+                yield url.attr.href
 
     def parse_url(self):
-        html = self.parse_job_url()
-        pool = Pool()
-        job_lists = pool.map(self.get_job_list, html)
-        return sum(job_lists, [])
+        htmls = self.parse_job_url()
+        for html in htmls:
+            yield self.get_job_list(html)
+
+if __name__ == '__main__':
+    start_time = time.time()
+    g = GetJobUrl()
+    l = g.parse_url()
+    end_time = time.time()
+    print(str(int(end_time - start_time)) + "s")

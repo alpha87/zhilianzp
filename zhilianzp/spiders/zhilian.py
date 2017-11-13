@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 import scrapy
-from utils.getter_genera import GetJobUrl
+# from utils.getter_genera import GetJobUrl
+from utils.gener import GetJobUrl
 from zhilianzp.items import ZhilianzpItem
 
 
@@ -9,7 +10,9 @@ class ZhilianSpider(scrapy.Spider):
     allowed_domains = ['zhaopin.com']
     geturl = GetJobUrl()
     all_urls = geturl.parse_url()
-    start_urls = all_urls
+    # start_urls = all_urls
+    for urls in all_urls:
+        start_urls = urls
 
     def parse(self, response):
         item = ZhilianzpItem()
